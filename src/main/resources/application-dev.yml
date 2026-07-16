@@ -116,7 +116,7 @@ knife4j:
   #    username: admin
   #    password: admin
   openapi:
-    title: 悦木图片管理系统 - API接口文档
+    title: 米娅图片管理系统 - API接口文档
     description: 基于SpringBoot + Vue3开发的图片管理系统，提供图片上传、管理、分享、搜索等完整功能的RESTful API接口文档
     version: v1.0.0
     group:

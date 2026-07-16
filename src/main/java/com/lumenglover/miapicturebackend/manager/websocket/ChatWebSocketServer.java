@@ -179,7 +179,7 @@ public class ChatWebSocketServer extends TextWebSocketHandler {
                 // 设置AI助手的信息
                 User aiUser = new User();
                 aiUser.setId(0L);
-                aiUser.setUserName("悦木小助手");
+                aiUser.setUserName("米娅小助手");
                 aiUser.setUserAccount("ai_assistant");
                 aiUser.setUserAvatar(VoUrlReplaceUtil.replaceUrl("https://mia-picture-1328106169.cos.ap-chongqing.myqcloud.com//public/1866450683272450049/2025-05-26_AOTA5tKU2w6ci7hH.png"));
                 aiMessage.setSender(aiUser);
@@ -201,7 +201,7 @@ public class ChatWebSocketServer extends TextWebSocketHandler {
                 // 设置AI助手的信息
                 User aiUser = new User();
                 aiUser.setId(0L);
-                aiUser.setUserName("悦木小助手");
+                aiUser.setUserName("米娅小助手");
                 aiUser.setUserAccount("ai_assistant");
                 aiUser.setUserAvatar(VoUrlReplaceUtil.replaceUrl("https://mia-picture-1328106169.cos.ap-chongqing.myqcloud.com//public/1866450683272450049/2025-05-26_AOTA5tKU2w6ci7hH.png"));
                 errorMessage.setSender(aiUser);
@@ -1043,10 +1043,10 @@ public class ChatWebSocketServer extends TextWebSocketHandler {
      */
     public void handleSpaceChatMessage(ChatMessage chatMessage, WebSocketSession session) throws IOException {
         try {
-            // 如果是公共空间且内容中包含@悦木小助手
-            if (chatMessage.getSpaceId() == -2 && chatMessage.getContent().contains("@悦木小助手")) {
-                // 提取问题内容（去掉@悦木小助手）
-                String question = chatMessage.getContent().replace("@悦木小助手", "").trim();
+            // 如果是公共空间且内容中包含@米娅小助手
+            if (chatMessage.getSpaceId() == -2 && chatMessage.getContent().contains("@米娅小助手")) {
+                // 提取问题内容（去掉@米娅小助手）
+                String question = chatMessage.getContent().replace("@米娅小助手", "").trim();
 
                 // 构建上下文信息
                 if (chatMessage.getReplyId() != null) {
@@ -1135,7 +1135,7 @@ public class ChatWebSocketServer extends TextWebSocketHandler {
 
                 User aiUser = new User();
                 aiUser.setId(0L);
-                aiUser.setUserName("悦木小助手");
+                aiUser.setUserName("米娅小助手");
                 aiUser.setUserAccount("ai_assistant");
                 aiUser.setUserAvatar(VoUrlReplaceUtil.replaceUrl("https://mia-picture-1328106169.cos.ap-chongqing.myqcloud.com//public/1866450683272450049/2025-05-26_AOTA5tKU2w6ci7hH.png"));
                 busyMessage.setSender(aiUser);

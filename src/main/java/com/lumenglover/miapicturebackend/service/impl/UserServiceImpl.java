@@ -324,7 +324,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .and(wrapper -> {
                     // 仅支持邮箱登录
                     wrapper.eq("email", accountOrEmail);
-                    // 如果是纯数字，则支持悦木号（ID）登录
+                    // 如果是纯数字，则支持米娅号（ID）登录
                     if (accountOrEmail.matches("\\d+")) {
                         wrapper.or().eq("id", accountOrEmail);
                     }

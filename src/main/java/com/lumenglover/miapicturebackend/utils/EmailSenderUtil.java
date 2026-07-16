@@ -52,11 +52,11 @@ public class EmailSenderUtil {
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from, "悦木", "UTF-8"));
+            message.setFrom(new InternetAddress(from, "米娅", "UTF-8"));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
 
             // 编码邮件主题
-            String encodedSubject = MimeUtility.encodeText("悦木邮箱验证码", "UTF-8", "B");
+            String encodedSubject = MimeUtility.encodeText("米娅邮箱验证码", "UTF-8", "B");
             message.setSubject(encodedSubject, "UTF-8");
 
             String htmlContent = readHTMLFromFile();
@@ -103,11 +103,11 @@ public class EmailSenderUtil {
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from, "悦木", "UTF-8"));
+            message.setFrom(new InternetAddress(from, "米娅", "UTF-8"));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
 
             // 编码邮件主题
-            String encodedSubject = MimeUtility.encodeText("悦木内容审核通知", "UTF-8", "B");
+            String encodedSubject = MimeUtility.encodeText("米娅内容审核通知", "UTF-8", "B");
             message.setSubject(encodedSubject, "UTF-8");
 
             // 设置邮件内容
@@ -147,7 +147,7 @@ public class EmailSenderUtil {
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from, "悦木系统", "UTF-8"));
+            message.setFrom(new InternetAddress(from, "米娅系统", "UTF-8"));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(adminEmail));
 
             // 编码邮件主题
@@ -162,7 +162,7 @@ public class EmailSenderUtil {
                     "    <title>ES同步失败告警</title>\n" +
                     "</head>\n" +
                     "<body>\n" +
-                    "    <h2>悦木系统 ES 同步失败告警</h2>\n" +
+                    "    <h2>米娅系统 ES 同步失败告警</h2>\n" +
                     "    <p><strong>数据类型:</strong> " + dataType + "</p>\n" +
                     "    <p><strong>错误时间:</strong> " + new java.util.Date() + "</p>\n" +
                     "    <p><strong>错误摘要:</strong> " + errorMessage + "</p>\n" +

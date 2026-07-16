@@ -385,7 +385,7 @@ public class ChatMessageServiceImpl extends ServiceImpl<ChatMessageMapper, ChatM
         // 检查是否是群聊中的deepseek相关消息（AI的回复或用户的@提问）
         boolean isDeepSeekMessage = message.getSpaceId() != null && message.getSpaceId() == -2L &&
                 ((message.getSenderId() != null && message.getSenderId() == 0L) ||
-                 (message.getContent() != null && message.getContent().contains("@悦木小助手")));
+                 (message.getContent() != null && message.getContent().contains("@米娅小助手")));
 
         // 1. 保存前同步进行安全检查（绕过deepseek消息）
         if (!isDeepSeekMessage && message.getContent() != null && !message.getContent().isEmpty()

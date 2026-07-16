@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 /**
  * 用户问题预处理工具类
- * 适配悦木图片管理系统RAG智能客服场景，提供标准化、清洗、同义词扩展、关键词提取等能力
+ * 适配米娅图片管理系统RAG智能客服场景，提供标准化、清洗、同义词扩展、关键词提取等能力
  */
 public class QuestionPreprocessor {
 
@@ -22,9 +22,9 @@ public class QuestionPreprocessor {
     ));
     // 问题模块分类关键词
     private static final Map<String, List<String>> QUESTION_MODULES = new HashMap<>();
-    // 错别字映射表（补充悦木业务专属）
+    // 错别字映射表（补充米娅业务专属）
     private static final Map<String, String> TYPO_MAP = new HashMap<>();
-    // 同义词映射表（补充悦木业务专属）
+    // 同义词映射表（补充米娅业务专属）
     private static final Map<String, String[]> SYNONYM_MAP = new HashMap<>();
 
     static {
@@ -38,7 +38,7 @@ public class QuestionPreprocessor {
      */
     private static void initTypoMap() {
         // 基础通用错别字
-        TYPO_MAP.put("悦木", "悦木");
+        TYPO_MAP.put("米娅", "米娅");
         TYPO_MAP.put("图册", "相册");
         TYPO_MAP.put("图象", "图像");
         TYPO_MAP.put("相片", "照片");
