@@ -1,0 +1,11 @@
+package com.lumenglover.miapicturebackend.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lumenglover.miapicturebackend.model.entity.UserSystemNotifyRead;
+
+/**
+ * 用户系统通知阅读状态 Mapper
+ */
+public interface UserSystemNotifyReadMapper extends BaseMapper<UserSystemNotifyRead> {
+
+}

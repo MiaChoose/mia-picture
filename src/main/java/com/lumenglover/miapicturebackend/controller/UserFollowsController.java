@@ -1,0 +1,121 @@
+package com.lumenglover.miapicturebackend.controller;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lumenglover.miapicturebackend.common.BaseResponse;
+import com.lumenglover.miapicturebackend.common.ResultUtils;
+import com.lumenglover.miapicturebackend.exception.BusinessException;
+import com.lumenglover.miapicturebackend.exception.ErrorCode;
+import com.lumenglover.miapicturebackend.exception.ThrowUtils;
+import com.lumenglover.miapicturebackend.model.dto.picture.PictureQueryRequest;
+import com.lumenglover.miapicturebackend.model.dto.userfollows.UserFollowsAddRequest;
+import com.lumenglover.miapicturebackend.model.dto.userfollows.UserFollowsIsFollowsRequest;
+import com.lumenglover.miapicturebackend.model.dto.userfollows.UserfollowsQueryRequest;
+import com.lumenglover.miapicturebackend.model.entity.Picture;
+import com.lumenglover.miapicturebackend.model.entity.User;
+import com.lumenglover.miapicturebackend.model.enums.PictureReviewStatusEnum;
+import com.lumenglover.miapicturebackend.model.vo.FollowersAndFansVO;
+import com.lumenglover.miapicturebackend.model.vo.PictureVO;
+import com.lumenglover.miapicturebackend.model.vo.UserVO;
+import com.lumenglover.miapicturebackend.service.PictureService;
+import com.lumenglover.miapicturebackend.annotation.RateLimiter;
+import com.lumenglover.miapicturebackend.service.UserFollowsService;
+import com.lumenglover.miapicturebackend.service.UserService;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+@RestController
+@RequestMapping("/userfollows")
+public class UserFollowsController {
+   @Resource
+   private UserFollowsService userfollowsService;
+   @Resource
+   private PictureService pictureService;
+
+   @Resource
+   private UserService userService;
+
+   /**
+    * 关注、取关
+    */
+   @PostMapping("/adduserfollows")
+   @RateLimiter(key = "user_follows_add", time = 60, count = 10, message = "关注操作过于频繁，请稍后再试")
+   public BaseResponse<Boolean> addUserFollows(@RequestBody UserFollowsAddRequest userFollowsAddRequest, HttpServletRequest request){
+      // 检查目标用户是否允许被关注
+      User targetUser = userService.getById(userFollowsAddRequest.getFollowingId());
+      if (targetUser != null && targetUser.getAllowFollow() != null && targetUser.getAllowFollow() == 0) {
+         throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "对方不允许被关注");
+      }
+      return ResultUtils.success(userfollowsService.addUserFollows(userFollowsAddRequest));
+   }
+
+   /**
+    * 查找是否关注
+    */
+   @PostMapping("/findisfollow")
+   @RateLimiter(key = "user_follows_find", time = 60, count = 30, message = "关注状态查询过于频繁，请稍后再试")
+   public BaseResponse<Boolean> findIsFollow(@RequestBody UserFollowsIsFollowsRequest userFollowsIsFollowsRequest){
+      return ResultUtils.success(userfollowsService.findIsFollow(userFollowsIsFollowsRequest));
+   }
+
+   /**
+    * 得到关注,粉丝列表
+    */
+   @PostMapping("/getfolloworfanlist")
+   @RateLimiter(key = "user_follows_list", time = 60, count = 20, message = "关注列表查询过于频繁，请稍后再试")
+   public BaseResponse<Page<UserVO>> getFollowOrFanList(@RequestBody UserfollowsQueryRequest userfollowsQueryRequest, HttpServletRequest request){
+      // 检查目标用户是否允许展示其关注或粉丝列表
+      Long targetUserId = userfollowsQueryRequest.getFollowingId() != null ? userfollowsQueryRequest.getFollowingId() : userfollowsQueryRequest.getFollowerId();
+      User targetUser = userService.getById(targetUserId);
+      if (targetUser != null) {
+         User loginUser = userService.getLoginUser(request);
+         boolean isOwner = loginUser != null && java.util.Objects.equals(targetUser.getId(), loginUser.getId());
+
+         if (!isOwner) {
+            // 如果查询关注列表（searchType为0），检查是否允许展示关注列表
+            if (userfollowsQueryRequest.getSearchType() == 0 && targetUser.getShowFollowList() != null && targetUser.getShowFollowList() == 0) {
+               throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "对方不允许展示关注列表");
+            }
+            // 如果查询粉丝列表（searchType为1），检查是否允许展示粉丝列表
+            else if (userfollowsQueryRequest.getSearchType() == 1 && targetUser.getShowFansList() != null && targetUser.getShowFansList() == 0) {
+               throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "对方不允许展示粉丝列表");
+            }
+         }
+      }
+      return ResultUtils.success(userfollowsService.getFollowOrFanList(userfollowsQueryRequest));
+   }
+
+   /**
+    * 得到关注和粉丝数量
+    */
+   @PostMapping("/getfollowandfanscount/{id}")
+   @RateLimiter(key = "user_follows_count", time = 60, count = 50, message = "关注数量查询过于频繁，请稍后再试")
+   public BaseResponse<FollowersAndFansVO> getFollowAndFansCount(@PathVariable Long id, HttpServletRequest request){
+      return ResultUtils.success(userfollowsService.getFollowAndFansCount(id));
+   }
+
+   /**
+    * 得到关注或者粉丝的公共的图片数据
+    */
+   @PostMapping("/getfolloworfanpicture")
+   @RateLimiter(key = "user_follows_picture", time = 60, count = 20, message = "关注者图片查询过于频繁，请稍后再试")
+   public BaseResponse<Page<PictureVO>> getFollowOrFanPicture(@RequestBody PictureQueryRequest pictureQueryRequest, HttpServletRequest request){
+      long current = pictureQueryRequest.getCurrent();
+      long size = pictureQueryRequest.getPageSize();
+      // 限制爬虫
+      ThrowUtils.throwIf(size > 50, ErrorCode.PARAMS_ERROR);
+
+
+      ThrowUtils.throwIf(pictureQueryRequest.getUserId() == null, ErrorCode.PARAMS_ERROR, "用户id不能为空");
+      pictureQueryRequest.setUserId(pictureQueryRequest.getUserId());
+      pictureQueryRequest.setNullSpaceId(true);
+      pictureQueryRequest.setReviewStatus(PictureReviewStatusEnum.PASS.getValue());
+
+      // 查询数据库
+      Page<Picture> picturePage = pictureService.page(new Page<>(current, size),
+              pictureService.getQueryWrapper(pictureQueryRequest));
+      // 获取封装类
+      return ResultUtils.success(pictureService.getPictureVOPage(picturePage, request));
+   }
+}
